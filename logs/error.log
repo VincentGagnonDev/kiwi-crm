@@ -1,0 +1,4 @@
+{"code":2,"level":"error","message":"Calendar command failed","service":"kiwi","stderr":"unknown flag --title\nRun with --help to see available flags\n","timestamp":"2026-02-24T23:09:14.218Z"}
+{"error":"gog exit 2: unknown flag --title\nRun with --help to see available flags","level":"error","message":"Appointment creation failed","service":"kiwi","timestamp":"2026-02-24T23:09:14.219Z"}
+{"error":"No eventId in response","level":"error","message":"Appointment creation failed","service":"kiwi","timestamp":"2026-02-24T23:10:55.700Z"}
+{"error":"ENOENT: no such file or directory, stat '/home/gavion/.openclaw/workspace/Projects/kiwi/src/public/admin.html'","level":"error","message":"Unhandled error","service":"kiwi","stack":"Error: ENOENT: no such file or directory, stat '/home/gavion/.openclaw/workspace/Projects/kiwi/src/public/admin.html'","timestamp":"2026-02-25T00:14:24.555Z","url":"/admin"}

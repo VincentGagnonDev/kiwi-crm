@@ -1,0 +1,80 @@
+{"env":"development","level":"info","message":"Project Kiwi started","port":"3000","service":"kiwi","timestamp":"2026-02-24T22:36:51.566Z"}
+{"level":"warn","message":"OPENROUTER_API_KEY not set – chatbot will use demo responses","service":"kiwi","timestamp":"2026-02-24T22:36:51.568Z"}
+{"env":"development","level":"info","message":"Project Kiwi started","port":"3000","service":"kiwi","timestamp":"2026-02-24T22:37:13.864Z"}
+{"level":"warn","message":"OPENROUTER_API_KEY not set – chatbot will use demo responses","service":"kiwi","timestamp":"2026-02-24T22:37:13.866Z"}
+{"email":"test@example.com","id":1,"level":"info","message":"Lead captured","service":"kiwi","timestamp":"2026-02-24T22:37:14.198Z"}
+{"datetime":"2025-02-26T14:00:00","email":"bob@example.com","level":"info","message":"Calendar event scheduled","name":"Bob Smith","service":" Consultation","timestamp":"2026-02-24T22:37:14.203Z"}
+{"datetime":"2025-02-26T14:00:00","email":"bob@example.com","id":1,"level":"info","message":"Appointment created","service":"kiwi","timestamp":"2026-02-24T22:37:14.203Z"}
+{"env":"development","level":"info","message":"Project Kiwi started","port":"3000","service":"kiwi","timestamp":"2026-02-24T22:37:24.876Z"}
+{"level":"warn","message":"OPENROUTER_API_KEY not set – chatbot will use demo responses","service":"kiwi","timestamp":"2026-02-24T22:37:24.878Z"}
+{"env":"development","level":"info","message":"Project Kiwi started","port":"3000","service":"kiwi","timestamp":"2026-02-24T22:37:44.895Z"}
+{"level":"warn","message":"OPENROUTER_API_KEY not set – chatbot will use demo responses","service":"kiwi","timestamp":"2026-02-24T22:37:44.897Z"}
+{"env":"development","level":"info","message":"Project Kiwi started","port":"3000","service":"kiwi","timestamp":"2026-02-24T22:38:15.436Z"}
+{"level":"warn","message":"OPENROUTER_API_KEY not set – chatbot will use demo responses","service":"kiwi","timestamp":"2026-02-24T22:38:15.438Z"}
+{"level":"info","message":"Admin auth initialized","passSet":true,"service":"kiwi","timestamp":"2026-02-24T22:38:45.983Z","user":"***","userSet":true}
+{"env":"development","level":"info","message":"Project Kiwi started","port":"3000","service":"kiwi","timestamp":"2026-02-24T22:38:45.994Z"}
+{"level":"warn","message":"OPENROUTER_API_KEY not set – chatbot will use demo responses","service":"kiwi","timestamp":"2026-02-24T22:38:45.995Z"}
+{"level":"info","message":"Admin auth initialized","passSet":true,"service":"kiwi","timestamp":"2026-02-24T22:38:59.698Z","user":"***","userSet":true}
+{"env":"development","level":"info","message":"Project Kiwi started","port":"3000","service":"kiwi","timestamp":"2026-02-24T22:38:59.708Z"}
+{"level":"warn","message":"OPENROUTER_API_KEY not set – chatbot will use demo responses","service":"kiwi","timestamp":"2026-02-24T22:38:59.708Z"}
+{"level":"info","message":"Admin auth initialized","passSet":true,"service":"kiwi","timestamp":"2026-02-24T22:39:20.577Z","user":"***","userSet":true}
+{"env":"development","level":"info","message":"Project Kiwi started","port":"3000","service":"kiwi","timestamp":"2026-02-24T22:39:20.588Z"}
+{"level":"warn","message":"OPENROUTER_API_KEY not set – chatbot will use demo responses","service":"kiwi","timestamp":"2026-02-24T22:39:20.588Z"}
+{"email":"test@example.com","id":2,"level":"info","message":"Lead captured","service":"kiwi","timestamp":"2026-02-24T22:39:20.895Z"}
+{"datetime":"2025-02-26T14:00:00","email":"bob@example.com","level":"info","message":"Calendar event scheduled","name":"Bob Smith","service":" Consultation","timestamp":"2026-02-24T22:39:20.900Z"}
+{"datetime":"2025-02-26T14:00:00","email":"bob@example.com","id":2,"level":"info","message":"Appointment created","service":"kiwi","timestamp":"2026-02-24T22:39:20.901Z"}
+{"level":"info","message":"Admin auth initialized","passSet":true,"service":"kiwi","timestamp":"2026-02-24T22:39:47.189Z","user":"***","userSet":true}
+{"env":"development","level":"info","message":"Project Kiwi started","port":"3000","service":"kiwi","timestamp":"2026-02-24T22:39:47.199Z"}
+{"level":"warn","message":"OPENROUTER_API_KEY not set – chatbot will use demo responses","service":"kiwi","timestamp":"2026-02-24T22:39:47.200Z"}
+{"email":"test@example.com","id":3,"level":"info","message":"Lead captured","service":"kiwi","timestamp":"2026-02-24T22:39:47.516Z"}
+{"datetime":"2025-02-26T14:00:00","email":"bob@example.com","level":"info","message":"Calendar event scheduled","name":"Bob Smith","service":" Consultation","timestamp":"2026-02-24T22:39:47.521Z"}
+{"datetime":"2025-02-26T14:00:00","email":"bob@example.com","id":3,"level":"info","message":"Appointment created","service":"kiwi","timestamp":"2026-02-24T22:39:47.521Z"}
+{"level":"info","message":"Admin auth initialized","passSet":true,"service":"kiwi","timestamp":"2026-02-24T23:09:13.780Z","user":"***","userSet":true}
+{"env":"development","level":"info","message":"Project Kiwi started","port":"3000","service":"kiwi","timestamp":"2026-02-24T23:09:13.792Z"}
+{"level":"warn","message":"OPENROUTER_API_KEY not set – chatbot will use demo responses","service":"kiwi","timestamp":"2026-02-24T23:09:13.793Z"}
+{"email":"test@example.com","id":4,"level":"info","message":"Lead captured","service":"kiwi","timestamp":"2026-02-24T23:09:14.085Z"}
+{"code":2,"level":"error","message":"Calendar command failed","service":"kiwi","stderr":"unknown flag --title\nRun with --help to see available flags\n","timestamp":"2026-02-24T23:09:14.218Z"}
+{"error":"gog exit 2: unknown flag --title\nRun with --help to see available flags","level":"error","message":"Appointment creation failed","service":"kiwi","timestamp":"2026-02-24T23:09:14.219Z"}
+{"level":"info","message":"Admin auth initialized","passSet":true,"service":"kiwi","timestamp":"2026-02-24T23:10:52.915Z","user":"***","userSet":true}
+{"env":"development","level":"info","message":"Project Kiwi started","port":"3000","service":"kiwi","timestamp":"2026-02-24T23:10:52.928Z"}
+{"level":"warn","message":"OPENROUTER_API_KEY not set – chatbot will use demo responses","service":"kiwi","timestamp":"2026-02-24T23:10:52.928Z"}
+{"email":"test@example.com","id":5,"level":"info","message":"Lead captured","service":"kiwi","timestamp":"2026-02-24T23:10:53.236Z"}
+{"error":"No eventId in response","level":"error","message":"Appointment creation failed","service":"kiwi","timestamp":"2026-02-24T23:10:55.700Z"}
+{"level":"info","message":"Admin auth initialized","passSet":true,"service":"kiwi","timestamp":"2026-02-24T23:11:13.138Z","user":"***","userSet":true}
+{"env":"development","level":"info","message":"Project Kiwi started","port":"3000","service":"kiwi","timestamp":"2026-02-24T23:11:13.150Z"}
+{"level":"warn","message":"OPENROUTER_API_KEY not set – chatbot will use demo responses","service":"kiwi","timestamp":"2026-02-24T23:11:13.151Z"}
+{"email":"test@example.com","id":6,"level":"info","message":"Lead captured","service":"kiwi","timestamp":"2026-02-24T23:11:13.458Z"}
+{"eventId":"h9110hiu9b7fiiqed2ro9misrg","level":"info","message":"Calendar event created","service":"kiwi","timestamp":"2026-02-24T23:11:14.056Z"}
+{"datetime":"2025-02-26T14:00:00","email":"bob@example.com","id":6,"level":"info","message":"Appointment created","service":"kiwi","timestamp":"2026-02-24T23:11:14.057Z"}
+{"level":"info","message":"Admin auth initialized","passLength":7,"passSet":true,"service":"kiwi","timestamp":"2026-02-25T00:14:22.740Z","user":"admin","userSet":true}
+{"env":"development","level":"info","message":"Project Kiwi started","port":"3000","service":"kiwi","timestamp":"2026-02-25T00:14:22.752Z"}
+{"level":"warn","message":"OPENROUTER_API_KEY not set – chatbot will use demo responses","service":"kiwi","timestamp":"2026-02-25T00:14:22.753Z"}
+{"error":"ENOENT: no such file or directory, stat '/home/gavion/.openclaw/workspace/Projects/kiwi/src/public/admin.html'","level":"error","message":"Unhandled error","service":"kiwi","stack":"Error: ENOENT: no such file or directory, stat '/home/gavion/.openclaw/workspace/Projects/kiwi/src/public/admin.html'","timestamp":"2026-02-25T00:14:24.555Z","url":"/admin"}
+{"level":"info","message":"Admin auth initialized","passLength":7,"passSet":true,"service":"kiwi","timestamp":"2026-02-25T00:14:33.629Z","user":"admin","userSet":true}
+{"env":"development","level":"info","message":"Project Kiwi started","port":"3000","service":"kiwi","timestamp":"2026-02-25T00:14:33.640Z"}
+{"level":"warn","message":"OPENROUTER_API_KEY not set – chatbot will use demo responses","service":"kiwi","timestamp":"2026-02-25T00:14:33.641Z"}
+{"level":"info","message":"Admin auth initialized","passLength":7,"passSet":true,"service":"kiwi","timestamp":"2026-02-25T00:14:58.654Z","user":"admin","userSet":true}
+{"env":"development","level":"info","message":"Project Kiwi started","port":"3000","service":"kiwi","timestamp":"2026-02-25T00:14:58.667Z"}
+{"level":"warn","message":"OPENROUTER_API_KEY not set – chatbot will use demo responses","service":"kiwi","timestamp":"2026-02-25T00:14:58.667Z"}
+{"email":"test@example.com","id":7,"level":"info","message":"Lead captured","service":"kiwi","timestamp":"2026-02-25T00:15:01.504Z"}
+{"level":"info","message":"Admin auth initialized","passLength":7,"passSet":true,"service":"kiwi","timestamp":"2026-02-25T00:15:32.969Z","user":"admin","userSet":true}
+{"env":"development","level":"info","message":"Project Kiwi started","port":"3000","service":"kiwi","timestamp":"2026-02-25T00:15:32.982Z"}
+{"level":"warn","message":"OPENROUTER_API_KEY not set – chatbot will use demo responses","service":"kiwi","timestamp":"2026-02-25T00:15:32.982Z"}
+{"email":"test@example.com","id":8,"level":"info","message":"Lead captured","service":"kiwi","timestamp":"2026-02-25T00:15:33.319Z"}
+{"eventId":"rphfe4fesrlfpl6elofnreu7vs","level":"info","message":"Calendar event created","service":"kiwi","timestamp":"2026-02-25T00:15:34.036Z"}
+{"datetime":"2025-02-26T14:00:00","email":"bob@example.com","id":7,"level":"info","message":"Appointment created","service":"kiwi","timestamp":"2026-02-25T00:15:34.036Z"}
+{"level":"info","message":"Admin auth initialized","passLength":7,"passSet":true,"service":"kiwi","timestamp":"2026-02-25T01:20:26.799Z","user":"admin","userSet":true}
+{"env":"development","level":"info","message":"Project Kiwi started","port":"3000","service":"kiwi","timestamp":"2026-02-25T01:20:26.813Z"}
+{"level":"warn","message":"OPENROUTER_API_KEY not set – chatbot will use demo responses","service":"kiwi","timestamp":"2026-02-25T01:20:26.814Z"}
+{"email":"test@example.com","id":9,"level":"info","message":"Lead captured","service":"kiwi","timestamp":"2026-02-25T01:20:26.928Z"}
+{"eventId":"fgudfs2utl77t77pnu0f8emqnc","level":"info","message":"Calendar event created","service":"kiwi","timestamp":"2026-02-25T01:20:27.782Z"}
+{"datetime":"2025-02-26T14:00:00","email":"bob@example.com","id":8,"level":"info","message":"Appointment created","service":"kiwi","timestamp":"2026-02-25T01:20:27.783Z"}
+{"level":"info","message":"Admin auth initialized","passLength":7,"passSet":true,"service":"kiwi","timestamp":"2026-02-25T01:22:00.676Z","user":"admin","userSet":true}
+{"env":"development","level":"info","message":"Project Kiwi started","port":"3000","service":"kiwi","timestamp":"2026-02-25T01:22:00.692Z"}
+{"level":"warn","message":"OPENROUTER_API_KEY not set – chatbot will use demo responses","service":"kiwi","timestamp":"2026-02-25T01:22:00.693Z"}
+{"email":"test@example.com","id":10,"level":"info","message":"Lead captured","service":"kiwi","timestamp":"2026-02-25T01:22:01.005Z"}
+{"eventId":"p649pi4oifv4ttq23qu6ulesdc","level":"info","message":"Calendar event created","service":"kiwi","timestamp":"2026-02-25T01:22:01.741Z"}
+{"datetime":"2025-02-26T14:00:00","email":"bob@example.com","id":9,"level":"info","message":"Appointment created","service":"kiwi","timestamp":"2026-02-25T01:22:01.742Z"}
+{"level":"info","message":"Admin auth initialized","passLength":7,"passSet":true,"service":"kiwi","timestamp":"2026-02-25T01:41:08.516Z","user":"admin","userSet":true}
+{"env":"development","level":"info","message":"Project Kiwi started","port":"3000","service":"kiwi","timestamp":"2026-02-25T01:41:08.528Z"}
+{"level":"warn","message":"OPENROUTER_API_KEY not set – chatbot will use demo responses","service":"kiwi","timestamp":"2026-02-25T01:41:08.528Z"}

@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en" data-en>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kiwi Admin</title>
+  <style>
+    :root {
+      --primary: #ff6b00;
+      --primary-dark: #e65c00;
+      --bg: #000000;
+      --card: #111111;
+      --card-hover: #1a1a1a;
+      --text: #ffffff;
+      --muted: rgba(255,255,255,.6);
+      --border: #333333;
+      --success: #4caf50;
+      --warning: #ff9800;
+      --danger: #f44336;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    /* Header */
+    header {
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--primary);
+      letter-spacing: -0.5px;
+    }
+    .header-actions {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+    .lang-btn {
+      background: var(--card-hover);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 12px;
+      text-transform: uppercase;
+    }
+    .lang-btn:hover { border-color: var(--primary); }
+    .user-badge {
+      background: var(--primary);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    /* Sidebar + Main */
+    .container {
+      display: flex;
+      flex: 1;
+    }
+    nav {
+      width: 250px;
+      background: var(--card);
+      border-right: 1px solid var(--border);
+      padding: 1.5rem 1rem;
+    }
+    nav a {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 1rem;
+      margin-bottom: 0.5rem;
+      color: var(--muted);
+      text-decoration: none;
+      border-radius: 8px;
+      transition: all 0.2s;
+      font-size: 14px;
+    }
+    nav a:hover, nav a.active {
+      background: var(--card-hover);
+      color: var(--text);
+    }
+    nav a.active {
+      border-left: 3px solid var(--primary);
+    }
+    nav .icon { width: 18px; height: 18px; fill: currentColor; }
+
+    main {
+      flex: 1;
+      padding: 2rem;
+      overflow-y: auto;
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .stat-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .stat-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 16px rgba(255,107,0,0.1);
+    }
+    .stat-card h3 {
+      margin: 0 0 0.5rem;
+      color: var(--muted);
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 600;
+    }
+    .stat-card .value {
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: var(--primary);
+    }
+    .stat-card .sub {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 0.5rem;
+    }
+
+    /* Tables */
+    .section {
+      margin-bottom: 2.5rem;
+    }
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    .section-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .section-title::before {
+      content: '';
+      width: 4px;
+      height: 18px;
+      background: var(--primary);
+      border-radius: 2px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--card);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+    th, td {
+      padding: 1rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+      font-size: 14px;
+    }
+    th {
+      background: rgba(255,107,0,0.1);
+      color: var(--primary);
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 12px;
+      letter-spacing: 0.5px;
+    }
+    tr:hover { background: var(--card-hover); }
+    tr:last-child td { border-bottom: none; }
+    .badge {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    .badge-confirmed { background: rgba(76, 175, 80, 0.2); color: var(--success); }
+    .badge-pending { background: rgba(255, 152, 0, 0.2); color: var(--warning); }
+    .btn {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 12px;
+      transition: background 0.2s;
+    }
+    .btn:hover { background: var(--primary-dark); }
+    .btn-outline {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+    .btn-outline:hover { border-color: var(--primary); color: var(--primary); }
+    .actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    /* Utilities */
+    .loading { color: var(--muted); font-style: italic; text-align: center; padding: 2rem; }
+    .error { color: var(--danger); text-align: center; padding: 2rem; }
+    .empty { color: var(--muted); text-align: center; padding: 2rem; }
+    .hidden { display: none; }
+
+    @media (max-width: 768px) {
+      header { padding: 1rem; }
+      .container { flex-direction: column; }
+      nav { width: 100%; border-right: none; border-bottom: 1px solid var(--border); padding: 1rem; }
+      nav a { display: inline-flex; margin-right: 0.5rem; margin-bottom: 0; }
+      main { padding: 1rem; }
+      .stat-card .value { font-size: 1.8rem; }
+      table { display: block; overflow-x: auto; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <div class="logo">KIWI</div>
+    <div class="header-actions">
+      <button class="lang-btn" id="langToggle" data-fr="FR" data-en="EN">FR</button>
+      <div class="user-badge">Admin</div>
+    </div>
+  </header>
+
+  <div class="container">
+    <!-- Sidebar -->
+    <nav>
+      <a href="#" class="active" data-page="dashboard" data-fr="nav-dashboard" data-en="Dashboard">
+        <svg class="icon" viewBox="0 0 24 24"><path fill="currentColor" d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
+        Dashboard
+      </a>
+      <a href="#" data-page="leads" data-fr="nav-leads" data-en="Leads">
+        <svg class="icon" viewBox="0 0 24 24"><path fill="currentColor" d="M20 6h-4V4c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-6 0h-4V4h4v2z"/></svg>
+        Leads
+      </a>
+      <a href="#" data-page="appointments" data-fr="nav-appointments" data-en="Appointments">
+        <svg class="icon" viewBox="0 0 24 24"><path fill="currentColor" d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM9 10H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2z"/></svg>
+        Appointments
+      </a>
+    </nav>
+
+    <!-- Main Content -->
+    <main>
+      <!-- Dashboard Panel -->
+      <div id="page-dashboard" class="page">
+        <div class="stats-grid">
+          <div class="stat-card">
+            <h3 data-fr="stat-total-leads">Total Leads</h3>
+            <div class="value" id="total-leads">–</div>
+            <div class="sub" data-fr="stat-lifetime">Lifetime</div>
+          </div>
+          <div class="stat-card">
+            <h3 data-fr="stat-total-appointments">Total Appointments</h3>
+            <div class="value" id="total-appointments">–</div>
+            <div class="sub" data-fr="stat-booked">Booked via Kiwi</div>
+          </div>
+          <div class="stat-card">
+            <h3 data-fr="stat-conversion">Conversion Rate</h3>
+            <div class="value" id="conversion-rate">–</div>
+            <div class="sub" data-fr="stat-leads-to-appointments">Leads → Appointments</div>
+          </div>
+          <div class="stat-card">
+            <h3 data-fr="stat-recent">Recent Activity</h3>
+            <div class="value" id="recent-activity">–</div>
+            <div class="sub" data-fr="stat-last-7-days">Last 7 days</div>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-header">
+            <h2 class="section-title" data-fr="recent-leads">Recent Leads</h2>
+            <button class="btn btn-outline" onclick="exportCSV('leads')" data-fr="export">Export CSV</button>
+          </div>
+          <table>
+            <thead>
+              <tr><th data-fr="th-date">Date</th><th data-fr="th-name">Name</th><th data-fr="th-email">Email</th><th data-fr="th-business">Business</th><th data-fr="th-package">Package</th><th data-fr="th-message">Message</th></tr>
+            </thead>
+            <tbody id="leads-body"><tr><td colspan="6" class="loading">Loading…</td></tr></tbody>
+          </table>
+        </div>
+
+        <div class="section">
+          <div class="section-header">
+            <h2 class="section-title" data-fr="upcoming-appointments">Upcoming Appointments</h2>
+            <button class="btn btn-outline" onclick="exportCSV('appointments')" data-fr="export">Export CSV</button>
+          </div>
+          <table>
+            <thead>
+              <tr><th data-fr="th-datetime">Date/Time</th><th data-fr="th-name">Name</th><th data-fr="th-email">Email</th><th data-fr="th-service">Service</th><th data-fr="th-status">Status</th><th data-fr="th-actions">Actions</th></tr>
+            </thead>
+            <tbody id="appointments-body"><tr><td colspan="6" class="loading">Loading…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Leads Page (hidden) -->
+      <div id="page-leads" class="page hidden">
+        <h2 class="section-title" data-fr="all-leads">All Leads</h2>
+        <table>
+          <thead>
+            <tr><th data-fr="th-date">Date</th><th data-fr="th-name">Name</th><th data-fr="th-email">Email</th><th data-fr="th-business">Business</th><th data-fr="th-package">Package</th><th data-fr="th-message">Message</th></tr>
+          </thead>
+          <tbody id="leads-full-body"><tr><td colspan="6" class="loading">Loading…</td></tr></tbody>
+        </table>
+      </div>
+
+      <!-- Appointments Page (hidden) -->
+      <div id="page-appointments" class="page hidden">
+        <h2 class="section-title" data-fr="all-appointments">All Appointments</h2>
+        <table>
+          <thead>
+            <tr><th data-fr="th-datetime">Date/Time</th><th data-fr="th-name">Name</th><th data-fr="th-email">Email</th><th data-fr="th-service">Service</th><th data-fr="th-status">Status</th><th data-fr="th-actions">Actions</th></tr>
+          </thead>
+          <tbody id="appointments-full-body"><tr><td colspan="6" class="loading">Loading…</td></tr></tbody>
+        </table>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    // Translations
+    const translations = {
+      en: {
+        'nav-dashboard': 'Dashboard',
+        'nav-leads': 'Leads',
+        'nav-appointments': 'Appointments',
+        'stat-total-leads': 'Total Leads',
+        'stat-total-appointments': 'Total Appointments',
+        'stat-conversion': 'Conversion Rate',
+        'stat-recent': 'Recent Activity',
+        'stat-lifetime': 'Lifetime',
+        'stat-leads-to-appointments': 'Leads → Appointments',
+        'stat-booked': 'Booked via Kiwi',
+        'stat-last-7-days': 'Last 7 days',
+        'recent-leads': 'Recent Leads',
+        'upcoming-appointments': 'Upcoming Appointments',
+        'all-leads': 'All Leads',
+        'all-appointments': 'All Appointments',
+        'export': 'Export CSV',
+        'th-date': 'Date',
+        'th-name': 'Name',
+        'th-email': 'Email',
+        'th-business': 'Business',
+        'th-package': 'Package',
+        'th-message': 'Message',
+        'th-datetime': 'Date/Time',
+        'th-service': 'Service',
+        'th-status': 'Status',
+        'th-actions': 'Actions',
+        'confirmed': 'Confirmed',
+        'pending': 'Pending',
+        'confirm': 'Confirm',
+        'delete': 'Delete'
+      },
+      fr: {
+        'nav-dashboard': 'Tableau de Bord',
+        'nav-leads': 'Prospects',
+        'nav-appointments': 'Rendez-vous',
+        'stat-total-leads': 'Total Prospects',
+        'stat-total-appointments': 'Total Rendez-vous',
+        'stat-conversion': 'Taux de Conversion',
+        'stat-recent': 'Activité Récente',
+        'stat-lifetime': 'Depuis le début',
+        'stat-leads-to-appointments': 'Prospects → Rendez-vous',
+        'stat-booked': 'Réservés via Kiwi',
+        'stat-last-7-days': '7 derniers jours',
+        'recent-leads': 'Prospects Récents',
+        'upcoming-appointments': 'Rendez-vous à Venir',
+        'all-leads': 'Tous les Prospects',
+        'all-appointments': 'Tous les Rendez-vous',
+        'export': 'Exporter CSV',
+        'th-date': 'Date',
+        'th-name': 'Nom',
+        'th-email': 'Email',
+        'th-business': 'Entreprise',
+        'th-package': 'Forfait',
+        'th-message': 'Message',
+        'th-datetime': 'Date/Heure',
+        'th-service': 'Service',
+        'th-status': 'Statut',
+        'th-actions': 'Actions',
+        'confirmed': 'Confirmé',
+        'pending': 'En attente',
+        'confirm': 'Confirmer',
+        'delete': 'Supprimer'
+      }
+    };
+
+    let currentLang = 'en';
+
+    function escapeHtml(str) {
+      const div = document.createElement('div');
+      div.textContent = (str || '').toString();
+      return div.innerHTML;
+    }
+
+    function t(key) {
+      return translations[currentLang][key] || key;
+    }
+
+    function setLanguage(lang) {
+      currentLang = lang;
+      document.documentElement.lang = lang;
+      document.getElementById('langToggle').textContent = lang === 'en' ? 'FR' : 'EN';
+
+      // Update all elements with data-fr/data-en
+      document.querySelectorAll('[data-fr]').forEach(el => {
+        const key = el.getAttribute('data-fr');
+        if (translations[lang] && translations[lang][key]) {
+          el.textContent = translations[lang][key];
+        }
+      });
+    }
+
+    document.getElementById('langToggle').addEventListener('click', () => {
+      setLanguage(currentLang === 'en' ? 'fr' : 'en');
+    });
+
+    // Navigation
+    document.querySelectorAll('nav a').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+        link.classList.add('active');
+        const page = link.getAttribute('data-page');
+        document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
+        document.getElementById('page-' + page).classList.remove('hidden');
+        // Load data for that page
+        if (page === 'dashboard') loadDashboard();
+        if (page === 'leads') loadLeadsFull();
+        if (page === 'appointments') loadAppointmentsFull();
+      });
+    });
+
+    // API fetch with auth
+    async function fetchAdmin(path, options = {}) {
+      const res = await fetch('/api/admin' + path, {
+        ...options,
+        credentials: 'same-origin'
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return res.json();
+    }
+
+    async function loadDashboard() {
+      try {
+        const stats = await fetchAdmin('/stats');
+        document.getElementById('total-leads').textContent = stats.totalLeads;
+        document.getElementById('total-appointments').textContent = stats.totalAppointments;
+        document.getElementById('conversion-rate').textContent = stats.totalLeads > 0
+          ? Math.round((stats.totalAppointments / stats.totalLeads) * 100) + '%'
+          : '0%';
+        document.getElementById('recent-activity').textContent = stats.recentLeads.length;
+
+        // Recent leads
+        const leadsBody = document.getElementById('leads-body');
+        if (stats.recentLeads.length === 0) {
+          leadsBody.innerHTML = '<tr><td colspan="6" class="empty">No leads yet</td></tr>';
+        } else {
+          leadsBody.innerHTML = stats.recentLeads.map(lead => `
+            <tr>
+              <td>${new Date(lead.created_at).toLocaleDateString()}</td>
+              <td>${escapeHtml(lead.name)}</td>
+              <td>${escapeHtml(lead.email)}</td>
+              <td>${escapeHtml(lead.business || '')}</td>
+              <td>${escapeHtml(lead.package || '-')}</td>
+              <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${escapeHtml(lead.message || '')}">${escapeHtml(lead.message || '')}</td>
+            </tr>
+          `).join('');
+        }
+
+        // Upcoming appointments
+        const appts = await fetchAdmin('/appointments');
+        const apptBody = document.getElementById('appointments-body');
+        if (appts.length === 0) {
+          apptBody.innerHTML = '<tr><td colspan="6" class="empty">No appointments yet</td></tr>';
+        } else {
+          apptBody.innerHTML = appts.map(apt => `
+            <tr>
+              <td>${new Date(apt.datetime).toLocaleString()}<br><small style="color:var(--muted)">${apt.timezone}</small></td>
+              <td>${escapeHtml(apt.name)}</td>
+              <td>${escapeHtml(apt.email)}</td>
+              <td>${escapeHtml(apt.service)}</td>
+              <td><span class="badge ${apt.confirmed ? 'badge-confirmed' : 'badge-pending'}">${apt.confirmed ? t('confirmed') : t('pending')}</span></td>
+              <td class="actions">
+                <button class="btn btn-outline" onclick="confirmAppointment(${apt.id}, ${!apt.confirmed})">${apt.confirmed ? '✓' : t('confirm')}</button>
+              </td>
+            </tr>
+          `).join('');
+        }
+      } catch (e) {
+        console.error(e);
+        document.getElementById('total-leads').textContent = 'Error';
+      }
+    }
+
+    async function loadLeadsFull() {
+      try {
+        const res = await fetchAdmin('/leads?limit=100');
+        const tbody = document.getElementById('leads-full-body');
+        if (res.leads.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="6" class="empty">No leads</td></tr>';
+          return;
+        }
+        tbody.innerHTML = res.leads.map(lead => `
+          <tr>
+            <td>${new Date(lead.created_at).toLocaleDateString()}</td>
+            <td>${escapeHtml(lead.name)}</td>
+            <td>${escapeHtml(lead.email)}</td>
+            <td>${escapeHtml(lead.business || '')}</td>
+            <td>${escapeHtml(lead.package || '-')}</td>
+            <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${escapeHtml(lead.message || '')}">${escapeHtml(lead.message || '')}</td>
+          </tr>
+        `).join('');
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    async function loadAppointmentsFull() {
+      try {
+        const appts = await fetchAdmin('/appointments');
+        const tbody = document.getElementById('appointments-full-body');
+        if (appts.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="6" class="empty">No appointments</td></tr>';
+          return;
+        }
+        tbody.innerHTML = appts.map(apt => `
+          <tr>
+            <td>${new Date(apt.datetime).toLocaleString()}<br><small style="color:var(--muted)">${apt.timezone}</small></td>
+            <td>${escapeHtml(apt.name)}</td>
+            <td>${escapeHtml(apt.email)}</td>
+            <td>${escapeHtml(apt.service)}</td>
+            <td><span class="badge ${apt.confirmed ? 'badge-confirmed' : 'badge-pending'}">${apt.confirmed ? t('confirmed') : t('pending')}</span></td>
+            <td class="actions">
+              <button class="btn btn-outline" onclick="confirmAppointment(${apt.id}, ${!apt.confirmed})">${apt.confirmed ? '✓' : t('confirm')}</button>
+            </td>
+          </tr>
+        `).join('');
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    async function confirmAppointment(id, unconfirm) {
+      try {
+        await fetchAdmin(`/appointments/${id}/confirm`, { method: 'POST' });
+        alert('Updated');
+        loadDashboard();
+      } catch (e) {
+        alert('Failed');
+      }
+    }
+
+    function exportCSV(type) {
+      const url = '/api/admin/' + type + '.csv';
+      window.open(url, '_blank');
+    }
+
+    // Initial load
+    loadDashboard();
+  </script>
+</body>
+</html>

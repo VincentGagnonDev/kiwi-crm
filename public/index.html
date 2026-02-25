@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en" data-en>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kiwi AI Assistant – Demo</title>
+  <style>
+    :root { --primary: #ff6b00; --bg: #000; --card: #111; --text: #fff; --muted: rgba(255,255,255,.7); }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); padding: 2rem; max-width: 900px; margin: 0 auto; }
+    header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; border-bottom: 1px solid #333; padding-bottom: 1rem; }
+    h1 { color: var(--primary); font-size: 24px; }
+    .lang-toggle { background: var(--card); border: 1px solid #333; color: var(--text); padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-weight: 600; }
+    .lang-toggle:hover { border-color: var(--primary); }
+    .info { color: var(--muted); margin-bottom: 2rem; line-height: 1.6; }
+    .section { background: var(--card); border: 1px solid #333; border-radius: 8px; padding: 1.5rem; margin-bottom: 2rem; }
+    h2 { color: var(--primary); margin-bottom: 1rem; font-size: 18px; }
+    label { display: block; margin-bottom: 0.5rem; font-size: 14px; color: var(--muted); }
+    input, select, textarea { width: 100%; padding: 10px; margin-bottom: 1rem; background: #222; border: 1px solid #333; border-radius: 6px; color: var(--text); font-size: 14px; }
+    input:focus, textarea:focus, select:focus { outline: none; border-color: var(--primary); }
+    button { background: var(--primary); color: var(--text); border: none; padding: 12px 24px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 14px; transition: background 0.2s; }
+    button:hover { background: #e65c00; }
+    form .notice { font-size: 12px; color: var(--muted); margin-bottom: 1rem; }
+    #form-status { margin-top: 1rem; font-size: 14px; }
+    .success { color: #4caf50; }
+    .error { color: #ff4444; }
+    @media (max-width: 600px) {
+      body { padding: 1rem; }
+      header { flex-direction: column; gap: 1rem; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1 data-fr="Assistant IA Kiwi – Démo" data-en="Kiwi AI Assistant – Demo">Kiwi AI Assistant – Demo</h1>
+    <button class="lang-toggle" id="lang-btn" data-fr="FR" data-en="EN">FR</button>
+  </header>
+
+  <p class="info" data-fr="Cette page démontre le widget de chat embarqué. Cliquez sur l'icône en bas à droite pour ouvrir le chat. Le formulaire ci-dessous simule une soumission de lead." data-en="This page demonstrates the embeddable chat widget. Click the icon in the bottom-right to open chat. The form below simulates a lead submission.">This page demonstrates the embeddable chat widget. Click the icon in the bottom-right to open chat. The form below simulates a lead submission.</p>
+
+  <div class="section">
+    <h2 data-fr="Soumission de Lead" data-en="Lead Submission">Lead Submission</h2>
+    <form id="lead-form">
+      <div class="notice" data-fr="Tous les champs marqués * sont obligatoires." data-en="All fields marked * are required.">All fields marked * are required.</div>
+      <label for="name" data-fr="Nom complet *" data-en="Full Name *">Full Name *</label>
+      <input type="text" id="name" name="name" required placeholder="Jean Dupuis">
+
+      <label for="email" data-fr="Email *" data-en="Email *">Email *</label>
+      <input type="email" id="email" name="email" required placeholder="jean@example.com">
+
+      <label for="business" data-fr="Entreprise" data-en="Business">Business</label>
+      <input type="text" id="business" name="business" placeholder="Ma PME">
+
+      <label for="package" data-fr="Forfait d'intérêt" data-en="Package of interest">Package of interest</label>
+      <select id="package" name="package">
+        <option value="" data-fr="-- Sélectionnez --" data-en="-- Select --">-- Select --</option>
+        <option value="Starter" data-fr="Starter (199$/mois)" data-en="Starter ($199/mo)">Starter ($199/mo)</option>
+        <option value="Growth" data-fr="Growth (399$/mois)" data-en="Growth ($399/mo)">Growth ($399/mo)</option>
+        <option value="Agency" data-fr="Agency (799$/mois)" data-en="Agency ($799/mo)">Agency ($799/mo)</option>
+      </select>
+
+      <label for="message" data-fr="Message / Besoins" data-en="Message / Needs">Message / Needs</label>
+      <textarea id="message" name="message" rows="3" placeholder="Décrivez vos besoins..."></textarea>
+
+      <button type="submit" data-fr="Envoyer" data-en="Send">Send</button>
+      <div id="form-status"></div>
+    </form>
+  </div>
+
+  <div class="section">
+    <h2 data-fr="Widget de Chat" data-en="Chat Widget">Chat Widget</h2>
+    <p data-fr="Ouvrez le widget en bas à droite pour interagir avec l'assistant IA. La langue du widget correspond à celle de cette page." data-en="Open the widget in the bottom-right to interact with the AI assistant. The widget language matches this page.">Open the widget in the bottom-right to interact with the AI assistant. The widget language matches this page.</p>
+  </div>
+
+  <div id="gavion-chat-widget"></div>
+
+  <script src="/widget.js"></script>
+  <script>
+    const translations = {
+      fr: {
+        welcome: 'Bonjour! Je suis l\'assistant IA de Gavion. Comment puis-je vous aider?'
+      },
+      en: {
+        welcome: 'Hello! I\'m Gavion\'s AI assistant. How can I help you?'
+      }
+    };
+    let currentLang = 'en';
+    const btn = document.getElementById('lang-btn');
+    btn.addEventListener('click', () => {
+      currentLang = currentLang === 'en' ? 'fr' : 'en';
+      btn.textContent = currentLang.toUpperCase();
+      document.documentElement.lang = currentLang;
+      document.querySelectorAll('[data-fr][data-en]').forEach(el => {
+        el.textContent = el.getAttribute('data-' + currentLang);
+      });
+      // Re-init widget to update language
+      GavionChat.init({
+        container: '#gavion-chat-widget',
+        title: 'Gavion AI',
+        welcomeMessage: translations[currentLang].welcome,
+        language: currentLang
+      });
+    });
+
+    // Initial widget init
+    GavionChat.init({
+      container: '#gavion-chat-widget',
+      title: 'Gavion AI',
+      welcomeMessage: translations[currentLang].welcome,
+      language: currentLang
+    });
+
+    // Lead form submission
+    const form = document.getElementById('lead-form');
+    const status = document.getElementById('form-status');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = new FormData(form);
+      const payload = Object.fromEntries(formData);
+      status.textContent = '';
+      status.className = '';
+      try {
+        const res = await fetch('/api/lead', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if (res.ok && data.success) {
+          status.textContent = currentLang === 'fr'
+            ? 'Merci! Votre demande a été envoyée. Nous vous contacterons sous peu.'
+            : 'Thank you! Your request has been sent. We\'ll be in touch shortly.';
+          status.className = 'success';
+          form.reset();
+        } else {
+          throw new Error(data.error || data.errors?.map(e => e.msg).join(', '));
+        }
+      } catch (err) {
+        status.textContent = (currentLang === 'fr'
+          ? 'Erreur: '
+          : 'Error: ') + err.message;
+        status.className = 'error';
+      }
+    });
+  </script>
+</body>
+</html>
