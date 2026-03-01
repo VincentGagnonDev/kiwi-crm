@@ -8,6 +8,9 @@ const basicAuth = require('express-basic-auth');
 const { body, validationResult } = require('express-validator');
 const Database = require('better-sqlite3');
 const axios = require('axios');
+const nodemailer = require('nodemailer');
+const rateLimit = require('express-rate-limit');
+const cors = require('cors');
 
 // Load system prompts from JSON config file only
 function loadSystemPrompts() {
@@ -72,6 +75,7 @@ try {
 // Middleware
 app.use(express.json());
 app.use(express.static(path.join(__dirname, '..', 'public')));
+app.use(cors({ origin: '*' })); // Allow all origins for API; restrict in production if needed
 
 const adminAuth = basicAuth({
   users: { [process.env.ADMIN_USER || 'admin']: process.env.ADMIN_PASS || 'kiwi123' },
@@ -83,16 +87,67 @@ app.get('/api/health', (req, res) => res.json({ status: 'ok', time: new Date().t
 
 // Leads table
 db.exec(`
-  CREATE TABLE IF NOT EXISTS leads (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT NOT NULL,
-    email TEXT NOT NULL,
-    business TEXT,
-    package TEXT,
-    message TEXT,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-  );
-`);
+   CREATE TABLE IF NOT EXISTS leads (
+     id INTEGER PRIMARY KEY AUTOINCREMENT,
+     name TEXT NOT NULL,
+     email TEXT NOT NULL,
+     business TEXT,
+     package TEXT,
+     message TEXT,
+     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+   );
+ `);
+
+// Email helper
+function escapeHtml(text) {
+  if (!text) return '';
+  return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+}
+
+async function sendContactEmail(data) {
+  const { name, email, business, package: pkg, message } = data;
+  
+  const transporter = nodemailer.createTransport({
+    host: process.env.SMTP_HOST,
+    port: parseInt(process.env.SMTP_PORT) || 587,
+    secure: false,
+    auth: {
+      user: process.env.SMTP_USER,
+      pass: process.env.SMTP_PASS,
+    },
+  });
+
+  const html = `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+      <h2 style="color: #ff6b00;">New Contact Form Submission</h2>
+      <table style="border-collapse: collapse; width: 100%;">
+        <tr><td style="padding: 8px 0; font-weight: bold; width: 150px;">Name:</td><td>${escapeHtml(name)}</td></tr>
+        <tr><td style="padding: 8px 0; font-weight: bold;">Email:</td><td>${escapeHtml(email)}</td></tr>
+        <tr><td style="padding: 8px 0; font-weight: bold;">Business:</td><td>${escapeHtml(business || '-')}</td></tr>
+        <tr><td style="padding: 8px 0; font-weight: bold;">Package:</td><td>${escapeHtml(pkg || '-')}</td></tr>
+        <tr><td style="padding: 8px 0; font-weight: bold; vertical-align: top;">Message:</td><td>${escapeHtml(message).replace(/\n/g, '<br>')}</td></tr>
+        <tr><td style="padding: 8px 0; font-weight: bold;">Submitted:</td><td>${new Date().toLocaleString()}</td></tr>
+      </table>
+    </div>
+  `;
+
+  await transporter.sendMail({
+    from: `"Gavion Contact" <${process.env.SMTP_USER}>`,
+    to: 'info@gavion.ai',
+    replyTo: email,
+    subject: `[Gavion Contact] ${name} - ${pkg || 'General'}`,
+    html: html,
+  });
+}
+
+// Rate limiter for contact endpoint: 1 submission per IP per 15 minutes
+const contactLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 1,
+  message: { success: false, message: 'Too many submissions. Please try again later.' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
 
 // Create appointment (used by voice & web)
 app.post('/api/appointment',
@@ -169,6 +224,35 @@ app.post('/api/lead', async (req, res) => {
   } catch (err) {
     console.error('Lead DB error:', err);
     res.status(500).json({ error: 'db' });
+   }
+ });
+
+// Contact form endpoint — sends email to info@gavion.ai
+app.post('/api/contact', contactLimiter, async (req, res) => {
+  try {
+    const { name, email, business, package: pkg, message } = req.body;
+    
+    // Validation
+    if (!name || !email || !message) {
+      return res.status(400).json({ success: false, message: 'Missing required fields' });
+    }
+    // Basic email format check
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      return res.status(400).json({ success: false, message: 'Invalid email address' });
+    }
+
+    // Send email notification
+    if (process.env.SMTP_USER && process.env.SMTP_PASS) {
+      await sendContactEmail(req.body);
+    } else {
+      console.error('SMTP credentials not set');
+      return res.status(500).json({ success: false, message: 'Email service not configured' });
+    }
+
+    res.json({ success: true, message: 'Message sent successfully' });
+  } catch (err) {
+    console.error('Contact endpoint error:', err);
+    res.status(500).json({ success: false, message: 'Failed to send message' });
   }
 });
 
