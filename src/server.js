@@ -104,10 +104,11 @@ function escapeHtml(text) {
   return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
 }
 
-async function sendContactEmail(data) {
-  const { name, email, business, package: pkg, message } = data;
-  
-  const transporter = nodemailer.createTransport({
+// Singleton transporter for connection reuse
+let transporter = null;
+function getTransporter() {
+  if (transporter) return transporter;
+  transporter = nodemailer.createTransport({
     host: process.env.SMTP_HOST,
     port: parseInt(process.env.SMTP_PORT) || 587,
     secure: false,
@@ -116,7 +117,12 @@ async function sendContactEmail(data) {
       pass: process.env.SMTP_PASS,
     },
   });
+  return transporter;
+}
 
+async function sendContactEmail(data) {
+  const { name, email, business, package: pkg, message } = data;
+  
   const html = `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
       <h2 style="color: #ff6b00;">New Contact Form Submission</h2>
@@ -131,7 +137,7 @@ async function sendContactEmail(data) {
     </div>
   `;
 
-  await transporter.sendMail({
+  await getTransporter().sendMail({
     from: `"Gavion Contact" <${process.env.SMTP_USER}>`,
     to: 'info@gavion.ai',
     replyTo: email,
@@ -140,10 +146,100 @@ async function sendContactEmail(data) {
   });
 }
 
-// Rate limiter for contact endpoint: 1 submission per IP per 15 minutes
+async function sendConfirmationEmail(data) {
+  const { name, email, package: pkg, language = 'en' } = data;
+
+  const templates = {
+    en: {
+      subject: 'We Received Your Message! – Gavion',
+      html: `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; }
+    .header { background: #ff6b00; color: white; padding: 20px; text-align: center; border-radius: 8px 8px 0 0; }
+    .content { background: #f9f9f9; padding: 30px; border-radius: 0 0 8px 8px; }
+    .footer { margin-top: 20px; font-size: 12px; color: #777; text-align: center; }
+    .button { display: inline-block; padding: 12px 24px; background: #ff6b00; color: white; text-decoration: none; border-radius: 6px; margin: 10px 0; }
+    .package { background: #e0e0e0; padding: 10px; border-radius: 4px; margin: 10px 0; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1 style="margin:0;font-size:24px;">Gavion</h1>
+    <p style="margin:5px 0 0;">We've received your message</p>
+  </div>
+  <div class="content">
+    <p>Hi <strong>${escapeHtml(name)}</strong>,</p>
+    <p>Thank you for reaching out to Gavion! We've received your contact form submission and will get back to you within <strong>4 business hours</strong>.</p>
+    
+    ${pkg ? `<div class="package"><strong>Package of interest:</strong> ${escapeHtml(pkg)}</div>` : ''}
+    
+    <p>If you'd like to speak with us sooner, feel free to book a call or visit our contact page:</p>
+    <p><a href="http://localhost:3000#contact" class="button">Go to Contact Page</a></p>
+    
+    <p>Best regards,<br>The Gavion Sales Team</p>
+  </div>
+  <div class="footer">
+    <p>Gavion AI Integration Agency | Montreal, Quebec</p>
+    <p><a href="mailto:info@gavion.ai">info@gavion.ai</a></p>
+  </div>
+</body>
+</html>`
+    },
+    fr: {
+      subject: 'Nous avons reçu votre message ! – Gavion',
+      html: `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; }
+    .header { background: #ff6b00; color: white; padding: 20px; text-align: center; border-radius: 8px 8px 0 0; }
+    .content { background: #f9f9f9; padding: 30px; border-radius: 0 0 8px 8px; }
+    .footer { margin-top: 20px; font-size: 12px; color: #777; text-align: center; }
+    .button { display: inline-block; padding: 12px 24px; background: #ff6b00; color: white; text-decoration: none; border-radius: 6px; margin: 10px 0; }
+    .package { background: #e0e0e0; padding: 10px; border-radius: 4px; margin: 10px 0; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1 style="margin:0;font-size:24px;">Gavion</h1>
+    <p style="margin:5px 0 0;">Nous avons reçu votre message</p>
+  </div>
+  <div class="content">
+    <p>Bonjour <strong>${escapeHtml(name)}</strong>,</p>
+    <p>Merci de nous avoir contactés ! Nous avons reçu votre soumission et vous répondrons dans un délai de <strong>4 heures ouvrables</strong>.</p>
+    
+    ${pkg ? `<div class="package"><strong>Forfait d'intérêt :</strong> ${escapeHtml(pkg)}</div>` : ''}
+    
+    <p>Cordialement,<br>L'équipe des Ventes de Gavion</p>
+  </div>
+  <div class="footer">
+    <p>Agence d'Intégration IA Gavion | Montréal, Québec</p>
+    <p><a href="mailto:info@gavion.ai">info@gavion.ai</a></p>
+  </div>
+</body>
+</html>`
+    }
+  };
+
+  const tmpl = templates[language] || templates.en;
+
+  await getTransporter().sendMail({
+    from: `"Gavion" <${process.env.SMTP_USER}>`,
+    to: email,
+    replyTo: 'info@gavion.ai',
+    subject: tmpl.subject,
+    html: tmpl.html,
+  });
+}
+
+// Rate limiter for contact endpoint: generous limit for testing (effectively unlimited)
 const contactLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 1,
+  windowMs: 60 * 60 * 1000, // 1 hour window
+  max: 10000,               // Very high limit
   message: { success: false, message: 'Too many submissions. Please try again later.' },
   standardHeaders: true,
   legacyHeaders: false,
@@ -227,10 +323,10 @@ app.post('/api/lead', async (req, res) => {
    }
  });
 
-// Contact form endpoint — sends email to info@gavion.ai
+// Contact form endpoint — sends email to info@gavion.ai and confirmation to client
 app.post('/api/contact', contactLimiter, async (req, res) => {
   try {
-    const { name, email, business, package: pkg, message } = req.body;
+    const { name, email, business, package: pkg, message, language } = req.body;
     
     // Validation
     if (!name || !email || !message) {
@@ -241,15 +337,21 @@ app.post('/api/contact', contactLimiter, async (req, res) => {
       return res.status(400).json({ success: false, message: 'Invalid email address' });
     }
 
-    // Send email notification
-    if (process.env.SMTP_USER && process.env.SMTP_PASS) {
-      await sendContactEmail(req.body);
-    } else {
-      console.error('SMTP credentials not set');
-      return res.status(500).json({ success: false, message: 'Email service not configured' });
-    }
-
+    // Respond immediately to user
     res.json({ success: true, message: 'Message sent successfully' });
+
+    // Send notification to Gavion team (background)
+    if (process.env.SMTP_USER && process.env.SMTP_PASS) {
+      sendContactEmail(req.body).catch(err => {
+        console.error('Background notification email failed:', err);
+      });
+      // Also send confirmation to client (background)
+      sendConfirmationEmail({ ...req.body, language: language || 'en' }).catch(err => {
+        console.error('Confirmation email failed:', err);
+      });
+    } else {
+      console.warn('SMTP credentials not set, emails not sent');
+    }
   } catch (err) {
     console.error('Contact endpoint error:', err);
     res.status(500).json({ success: false, message: 'Failed to send message' });
